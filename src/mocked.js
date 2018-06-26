@@ -2,7 +2,7 @@ import fetchMock from "fetch-mock";
 
 const mocked=function(){
     fetchMock.get('*', {
-        "token":"123456",
+        "token":"1234567",
         "name": "brickspert",
         "intro": "please give me a star"
     });
