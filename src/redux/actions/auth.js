@@ -23,7 +23,7 @@ export function postAUTH(data = {}) {
       return response.json()
     })).then((json) => {
       setTimeout(() => {
-        dispatch(postAUTHSuccess('token'));
+        dispatch(postAUTHSuccess(json.token));
       }, 500);
 
     }).catch(() => {
