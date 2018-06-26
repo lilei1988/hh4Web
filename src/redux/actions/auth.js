@@ -24,7 +24,7 @@ export function postAUTH(data = {}) {
     })).then((json) => {
       setTimeout(() => {
         dispatch(postAUTHSuccess('token'));
-      }, 1000);
+      }, 500);
 
     }).catch(() => {
       dispatch(postAUTHFail());
