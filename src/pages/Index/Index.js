@@ -1,33 +1,34 @@
 import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import {Redirect, Route, Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from 'reactstrap';
+import Loadable from 'react-loadable';
 import "./index.css";
 import {logout} from '../../redux/actions/auth';
+
+import {Layout, Menu, Icon, Breadcrumb} from 'antd';
+import {router} from 'sw-toolbox';
+const {Header, Content, Footer, Sider} = Layout;
+
+const Loading = function () {
+  return <div>Loading...</div>
+};
+
+const TaskList = Loadable({
+  loader: () => import ('../Task/TaskList'),
+  loading: Loading
+});
 
 class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      collapsed: false
     };
   }
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen
+      collapsed: !this.state.collapsed
     });
   }
 
@@ -50,83 +51,55 @@ class Index extends Component {
     }
 
     return (
-      <div>
-        <Navbar className="navbar navbar-dark zbg-dark" expand="md">
-          <NavbarBrand href="javascrip::void();" onClick={this.props.logout}>reactstrap</NavbarBrand>
-          <NavbarToggler onClick={this.toggle}/>
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <NavLink href="/components/">Components</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-              </NavItem>
-              <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Options
-                </DropdownToggle>
-                <DropdownMenu right>
-                  <DropdownItem>
-                    Option 1
-                  </DropdownItem>
-                  <DropdownItem>
-                    Option 2
-                  </DropdownItem>
-                  <DropdownItem divider/>
-                  <DropdownItem>
-                    Reset
-                  </DropdownItem>
-                </DropdownMenu>
-              </UncontrolledDropdown>
-            </Nav>
-          </Collapse>
-        </Navbar>
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-sm-2 bg-light sidebar">
-              <div className="sidebar-header">
-                <h5>header</h5>
-              </div>
-              <ul className="nav flex-column">
-                <li className="nav-item">
-                  <a className="nav-link active" href="#">Home</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">About</a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    href="#homeSubmenu"
-                    data-toggle="collapse"
-                    aria-expanded="false">Pages</a>
-                  <ul className="nav flex-column collapse" id="homeSubmenu">
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">Page</a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">Page</a>
-                    </li>
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">Page</a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">Portfolio</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#">Contact</a>
-                </li>
-              </ul>
-
-            </div>
-            <div id="content" className="col-sm-10 ml-sm-auto"></div>
-          </div>
-        </div>
-
-      </div>
+      <Layout>
+        <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+          <div className="logo" onClick={this.props.logout}/>
+          <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+            <Menu.Item key="1">
+              <Icon type="user"/>
+              <span><Link to="/tasklist">nav 1</Link></span>
+            </Menu.Item>
+            <Menu.Item key="2">
+              <Icon type="video-camera"/>
+              <span>nav 2</span>
+            </Menu.Item>
+            <Menu.Item key="3">
+              <Icon type="upload"/>
+              <span>nav 3</span>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout>
+          <Header
+            style={{
+            background: '#fff',
+            padding: 0
+          }}>
+            <Icon
+              className="trigger"
+              type={this.state.collapsed
+              ? 'menu-unfold'
+              : 'menu-fold'}
+              onClick={this.toggle}/>
+          </Header>
+          {/* <Breadcrumb style={{
+            margin: '8px 16px 0'
+          }}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb> */}
+          <Content
+            style={{
+            margin: '24px 16px',
+            padding: 24,
+            background: '#fff',
+            minHeight: 680
+          }}>
+            <Route path="/tasklist" component={TaskList}></Route>
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }
